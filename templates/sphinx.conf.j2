@@ -1,0 +1,20 @@
+#! /bin/bash
+
+## BASIC SETTINGS ####################################################################################
+
+cat /etc/sphinxsearch/base.conf
+
+## MYSQL BASE SOURCES ################################################################################
+
+if [ -f /etc/sphinxsearch/mysql.conf ];
+then
+    cat /etc/sphinxsearch/mysql.conf
+fi
+
+## INDEXES ###########################################################################################
+
+{% if sphinxsearch_index_configurations %}
+{% for index_configuration in sphinxsearch_index_configurations %}
+cat {{ index_configuration }}
+{% endfor %}
+{% endif %}

@@ -1,0 +1,13 @@
+## MYSQL DATA SOURCES ###############################################################################
+
+{% for item in sphinxsearch_mysql_sources %}
+source {{ item.name }}
+{
+	type		= mysql
+	sql_host	= {{ item.sql_host }}
+	sql_user	= {{ item.sql_user }}
+	sql_pass	= {{ item.sql_pass }}
+	sql_port	= {{ item.sql_port }}
+}
+
+{% endfor %}

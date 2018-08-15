@@ -1,0 +1,6 @@
+---
+- name: rotate indexes
+  command: "indexer --all --rotate"
+
+- name: restart sphinxsearch
+  service: name=sphinxsearch enabled=yes state=restarted

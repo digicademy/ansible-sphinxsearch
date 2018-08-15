@@ -1,0 +1,54 @@
+---
+- name: Update apt cache
+  apt: update_cache=yes cache_valid_time=3600
+
+- name: Install Sphinxsearch with libstemmer support
+  apt:
+    pkg: "{{ item }}"
+    state: present
+    force: yes
+  with_items:
+    - libstemmer0d
+    - libpq5
+    - sphinxsearch
+
+- name: Configure Sphinxsearch basic settings
+  template:
+    src: base.conf.j2
+    dest: /etc/sphinxsearch/base.conf
+    owner: sphinxsearch
+    group: root
+    mode: u+rw,g+r,o-rwx
+  notify:
+    - rotate indexes
+    - restart sphinxsearch
+
+- name: Optionally configure Sphinxsearch MySQL settings
+  template:
+    src: mysql.conf.j2
+    dest: /etc/sphinxsearch/mysql.conf
+    owner: sphinxsearch
+    group: root
+    mode: u+rw,g+r,o-rwx
+  when: sphinxsearch_mysql_sources is defined
+  notify:
+    - rotate indexes
+    - restart sphinxsearch
+
+- name: Optionally configure Sphinxsearch indexes
+  template:
+    src: sphinx.conf.j2
+    dest: /etc/sphinxsearch/sphinx.conf
+    owner: sphinxsearch
+    group: root
+    mode: u+rw,g+r,o-rwx
+  when: sphinxsearch_index_configurations is defined
+  notify:
+    - rotate indexes
+    - restart sphinxsearch
+
+- name: Set Sphinxsearch autostart in /etc/default/sphinxsearch
+  lineinfile:
+    dest: /etc/default/sphinxsearch
+    regexp: "^START="
+    line: "START=yes"

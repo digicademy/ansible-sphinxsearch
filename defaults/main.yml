@@ -1,0 +1,84 @@
+---
+#############################
+# MySQL connection settings #
+#############################
+
+sphinxsearch_mysql_sources:
+  - { name: "base", sql_host: "localhost", sql_user: "root", sql_pass: "vagrant", sql_port: 3306 }
+
+########################################
+# Index configurations (path to files) #
+########################################
+
+sphinxsearch_index_configurations: []
+# - path/to/my/configuration.conf
+
+#################################
+# Sphinxsearch indexer settings #
+#################################
+
+sphinxsearch_indexer_mem_limit: "512M"
+# sphinxsearch_indexer_max_iops: 40
+# sphinxsearch_indexer_max_iosize: 1048576
+# sphinxsearch_indexer_max_xmlpipe2_field: "4M"
+# sphinxsearch_indexer_write_buffer: "1M"
+# sphinxsearch_indexer_max_file_field_buffer: "32M"
+
+#################################
+# Sphinxsearch searchd settings #
+#################################
+
+sphinxsearch_searchd_listen_points:
+  - "9312"
+  - "9306:mysql41"
+sphinxsearch_searchd_log: "/var/log/sphinxsearch/searchd.log"
+sphinxsearch_searchd_query_log: "/var/log/sphinxsearch/query.log"
+sphinxsearch_searchd_read_timeout: 5
+sphinxsearch_searchd_client_timeout: 300
+sphinxsearch_searchd_max_children: 30
+sphinxsearch_searchd_pid_file: "/var/run/sphinxsearch/searchd.pid"
+sphinxsearch_searchd_seamless_rotate: 1
+sphinxsearch_searchd_preopen_indexes: 1
+sphinxsearch_searchd_unlink_old: 1
+# sphinxsearch_searchd_attr_flush_period: 900
+# sphinxsearch_searchd_ondisk_dict_default: 1
+sphinxsearch_searchd_mva_updates_pool: "1M"
+sphinxsearch_searchd_max_packet_size: "8M"
+sphinxsearch_searchd_max_filters: 256
+sphinxsearch_searchd_max_filter_values: 4096
+# sphinxsearch_searchd_listen_backlog: 5
+# sphinxsearch_searchd_read_buffer: "256K"
+sphinxsearch_searchd_read_unhinted: "32K"
+sphinxsearch_searchd_max_batch_queries: 32
+# sphinxsearch_searchd_subtree_docs_cache: "4M"
+# sphinxsearch_searchd_subtree_hits_cache: "8M"
+sphinxsearch_searchd_workers: "threads"
+# sphinxsearch_searchd_dist_threads: 4
+# sphinxsearch_searchd_binlog_path: "/var/lib/sphinxsearch/data"
+# sphinxsearch_searchd_binlog_flush: 2
+# sphinxsearch_searchd_binlog_max_log_size: "256M"
+# sphinxsearch_searchd_thread_stack: "128K"
+# sphinxsearch_searchd_expansion_limit: 1000
+# sphinxsearch_searchd_rt_flush_period: 900
+# sphinxsearch_searchd_query_log_format: "sphinxql"
+# sphinxsearch_searchd_mysql_version_string: "5.0.37"
+# sphinxsearch_searchd_plugin_dir: "/usr/local/sphinx/lib"
+# sphinxsearch_searchd_collation_server: "utf8_general_ci"
+# sphinxsearch_searchd_collation_libc_locale: "C"
+# sphinxsearch_searchd_watchdog: 1
+# sphinxsearch_searchd_predicted_time_costs: "doc=64, hit=48, skip=2048, match=64"
+# sphinxsearch_searchd_sphinxql_state: "sphinxvars.sql"
+# sphinxsearch_searchd_rt_merge_iops: 40
+# sphinxsearch_searchd_rt_merge_maxiosize: "1M"
+# sphinxsearch_searchd_ha_ping_interval: 0
+# sphinxsearch_searchd_ha_period_karma: 60
+# sphinxsearch_searchd_prefork_rotation_throttle: 100
+# sphinxsearch_searchd_snippets_file_prefix: "/mnt/common/server1/"
+
+################################
+# Sphinxsearch common settings #
+################################
+
+# sphinxsearch_common_lemmatizer_base: "/usr/local/share/sphinx/dicts"
+# sphinxsearch_common_rlp_root: "/usr/local/share/sphinx/rlp"
+# sphinxsearch_common_rlp_environment: "/usr/local/share/sphinx/rlp/rlp/etc/rlp-environment.xml"

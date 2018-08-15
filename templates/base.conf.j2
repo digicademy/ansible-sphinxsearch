@@ -1,0 +1,359 @@
+## INDEXER SETTINGS ###################################################################################
+
+indexer
+{
+	# memory limit, in bytes, kiloytes (16384K) or megabytes (256M)
+	# optional, default is 32M, max is 2047M, recommended is 256M to 1024M
+	mem_limit		= {{ sphinxsearch_indexer_mem_limit }}
+
+{% if sphinxsearch_indexer_max_iops is defined %}
+	# maximum IO calls per second (for I/O throttling)
+	# optional, default is 0 (unlimited)
+	#
+	max_iops		= {{ sphinxsearch_indexer_max_iops }}
+{% endif %}
+
+{% if sphinxsearch_indexer_max_iosize is defined %}
+	# maximum IO call size, bytes (for I/O throttling)
+	# optional, default is 0 (unlimited)
+	#
+	max_iosize		= {{ sphinxsearch_indexer_max_iosize }}
+{% endif %}
+
+{% if sphinxsearch_indexer_max_xmlpipe2_field is defined %}
+	# maximum xmlpipe2 field length, bytes
+	# optional, default is 2M
+	#
+	max_xmlpipe2_field	= {{ sphinxsearch_indexer_max_xmlpipe2_field }}
+{% endif %}
+
+{% if sphinxsearch_indexer_write_buffer is defined %}
+	# write buffer size, bytes
+	# several (currently up to 4) buffers will be allocated
+	# write buffers are allocated in addition to mem_limit
+	# optional, default is 1M
+	#
+	write_buffer		= {{ sphinxsearch_indexer_write_buffer }}
+{% endif %}
+
+{% if sphinxsearch_indexer_max_file_field_buffer is defined %}
+	# maximum file field adaptive buffer size
+	# optional, default is 8M, minimum is 1M
+	#
+	max_file_field_buffer	= {{ sphinxsearch_indexer_max_file_field_buffer }}
+{% endif %}
+}
+
+## SEARCHD SETTINGS ###################################################################################
+
+searchd
+{
+	# [hostname:]port[:protocol], or /unix/socket/path to listen on
+	# known protocols are 'sphinx' (SphinxAPI) and 'mysql41' (SphinxQL)
+	#
+	# multi-value, multiple listen points are allowed
+	# optional, defaults are 9312:sphinx and 9306:mysql41, as below
+	#
+	# listen			= 127.0.0.1
+	# listen			= 192.168.0.1:9312
+	# listen			= 9312
+	# listen			= /var/run/searchd.sock
+{% for item in sphinxsearch_searchd_listen_points %}
+	listen			= {{ item }}
+{% endfor %}
+
+	# log file, searchd run info is logged here
+	# optional, default is 'searchd.log'
+	log			= {{ sphinxsearch_searchd_log }}
+
+	# query log file, all search queries are logged here
+	# optional, default is empty (do not log queries)
+	query_log		= {{ sphinxsearch_searchd_query_log }}
+
+	# client read timeout, seconds
+	# optional, default is 5
+	read_timeout		= {{ sphinxsearch_searchd_read_timeout }}
+
+	# request timeout, seconds
+	# optional, default is 5 minutes
+	client_timeout		= {{ sphinxsearch_searchd_client_timeout }}
+
+	# maximum amount of children to fork (concurrent searches to run)
+	# optional, default is 0 (unlimited)
+	max_children		= {{ sphinxsearch_searchd_max_children }}
+
+	# PID file, searchd process ID file name
+	# mandatory
+	pid_file		= {{ sphinxsearch_searchd_pid_file }}
+
+	# seamless rotate, prevents rotate stalls if precaching huge datasets
+	# optional, default is 1
+	seamless_rotate		= {{ sphinxsearch_searchd_seamless_rotate }}
+
+	# whether to forcibly preopen all indexes on startup
+	# optional, default is 1 (preopen everything)
+	preopen_indexes		= {{ sphinxsearch_searchd_preopen_indexes }}
+
+	# whether to unlink .old index copies on succesful rotation.
+	# optional, default is 1 (do unlink)
+	unlink_old		= {{ sphinxsearch_searchd_unlink_old }}
+
+{% if sphinxsearch_searchd_attr_flush_period is defined %}
+	# attribute updates periodic flush timeout, seconds
+	# updates will be automatically dumped to disk this frequently
+	# optional, default is 0 (disable periodic flush)
+	#
+	attr_flush_period	= {{ sphinxsearch_searchd_attr_flush_period }}
+{% endif %}
+
+{% if sphinxsearch_searchd_ondisk_dict_default is defined %}
+	# instance-wide ondisk_dict defaults (per-index value take precedence)
+	# optional, default is 0 (precache all dictionaries in RAM)
+	#
+	ondisk_dict_default	= {{ sphinxsearch_searchd_ondisk_dict_default }}
+{% endif %}
+
+	# MVA updates pool size
+	# shared between all instances of searchd, disables attr flushes!
+	# optional, default size is 1M
+	mva_updates_pool	= {{ sphinxsearch_searchd_mva_updates_pool }}
+
+	# max allowed network packet size
+	# limits both query packets from clients, and responses from agents
+	# optional, default size is 8M
+	max_packet_size		= {{ sphinxsearch_searchd_max_packet_size }}
+
+	# max allowed per-query filter count
+	# optional, default is 256
+	max_filters		= {{ sphinxsearch_searchd_max_filters }}
+
+	# max allowed per-filter values count
+	# optional, default is 4096
+	max_filter_values	= {{ sphinxsearch_searchd_max_filter_values }}
+
+{% if sphinxsearch_searchd_listen_backlog is defined %}
+	# socket listen queue length
+	# optional, default is 5
+	#
+	listen_backlog		= {{ sphinxsearch_searchd_listen_backlog }}
+{% endif %}
+
+{% if sphinxsearch_searchd_read_buffer is defined %}
+	# per-keyword read buffer size
+	# optional, default is 256K
+	#
+	read_buffer		= {{ sphinxsearch_searchd_read_buffer }}
+{% endif %}
+
+{% if sphinxsearch_searchd_read_unhinted is defined %}
+	# unhinted read size (currently used when reading hits)
+	# optional, default is 32K
+	#
+	read_unhinted		= {{ sphinxsearch_searchd_read_unhinted }}
+{% endif %}
+
+	# max allowed per-batch query count (aka multi-query count)
+	# optional, default is 32
+	max_batch_queries	= {{ sphinxsearch_searchd_max_batch_queries }}
+
+{% if sphinxsearch_searchd_subtree_docs_cache is defined %}
+	# max common subtree document cache size, per-query
+	# optional, default is 0 (disable subtree optimization)
+	#
+	subtree_docs_cache	= {{ sphinxsearch_searchd_subtree_docs_cache }}
+{% endif %}
+
+{% if sphinxsearch_searchd_subtree_hits_cache is defined %}
+	# max common subtree hit cache size, per-query
+	# optional, default is 0 (disable subtree optimization)
+	#
+	subtree_hits_cache	= {{ sphinxsearch_searchd_subtree_hits_cache }}
+{% endif %}
+
+	# multi-processing mode (MPM)
+	# known values are none, fork, prefork, and threads
+	# optional, default is fork
+	#
+	workers			= {{ sphinxsearch_searchd_workers }} # for RT to work
+
+{% if sphinxsearch_searchd_dist_threads is defined %}
+	# max threads to create for searching local parts of a distributed index
+	# optional, default is 0, which means disable multi-threaded searching
+	# should work with all MPMs (ie. does NOT require workers=threads)
+	#
+	dist_threads		= {{ sphinxsearch_searchd_dist_threads }}
+{% endif %}
+
+{% if sphinxsearch_searchd_binlog_path is defined %}
+	# binlog files path; use empty string to disable binlog
+	# optional, default is build-time configured data directory
+	#
+	# binlog_path		= # disable logging
+	# binlog_path		= /var/lib/sphinxsearch/data # binlog.001 etc will be created there
+	binlog_path			= {{ sphinxsearch_searchd_binlog_path }}
+{% endif %}
+
+{% if sphinxsearch_searchd_binlog_flush is defined %}
+	# binlog flush/sync mode
+	# 0 means flush and sync every second
+	# 1 means flush and sync every transaction
+	# 2 means flush every transaction, sync every second
+	# optional, default is 2
+	#
+	binlog_flush		= {{ sphinxsearch_searchd_binlog_flush }}
+{% endif %}
+
+{% if binlog_max_log_size is defined %}
+	# binlog per-file size limit
+	# optional, default is 128M, 0 means no limit
+	#
+	binlog_max_log_size	= {{ binlog_max_log_size }}
+{% endif %}
+
+{% if sphinxsearch_searchd_thread_stack is defined %}
+	# per-thread stack size, only affects workers=threads mode
+	# optional, default is 64K
+	#
+	thread_stack			= {{ sphinxsearch_searchd_thread_stack }}
+{% endif %}
+
+{% if sphinxsearch_searchd_expansion_limit is defined %}
+	# per-keyword expansion limit (for dict=keywords prefix searches)
+	# optional, default is 0 (no limit)
+	#
+	expansion_limit		= {{ sphinxsearch_searchd_expansion_limit }}
+{% endif %}
+
+{% if sphinxsearch_searchd_rt_flush_period is defined %}
+	# RT RAM chunks flush period
+	# optional, default is 0 (no periodic flush)
+	#
+	rt_flush_period		= {{ sphinxsearch_searchd_rt_flush_period }}
+{% endif %}
+
+{% if sphinxsearch_searchd_query_log_format is defined %}
+	# query log file format
+	# optional, known values are plain and sphinxql, default is plain
+	#
+	query_log_format		= {{ sphinxsearch_searchd_query_log_format }}
+{% endif %}
+
+{% if sphinxsearch_searchd_mysql_version_string is defined %}
+	# version string returned to MySQL network protocol clients
+	# optional, default is empty (use Sphinx version)
+	#
+	mysql_version_string	= {{ sphinxsearch_searchd_mysql_version_string }}
+{% endif %}
+
+{% if sphinxsearch_searchd_plugin_dir is defined %}
+	# trusted plugin directory
+	# optional, default is empty (disable UDFs)
+	#
+	plugin_dir			= {{ sphinxsearch_searchd_plugin_dir }}
+{% endif %}
+
+{% if sphinxsearch_searchd_collation_server is defined %}
+	# default server-wide collation
+	# optional, default is libc_ci
+	#
+	collation_server		= {{ sphinxsearch_searchd_collation_server }}
+{% endif %}
+
+{% if sphinxsearch_searchd_collation_libc_locale is defined %}
+	# server-wide locale for libc based collations
+	# optional, default is C
+	#
+	# collation_libc_locale	= ru_RU.UTF-8
+	collation_libc_locale = {{ sphinxsearch_searchd_collation_libc_locale }}
+{% endif %}
+
+{% if sphinxsearch_searchd_watchdog is defined %}
+	# threaded server watchdog (only used in workers=threads mode)
+	# optional, values are 0 and 1, default is 1 (watchdog on)
+	#
+	watchdog				= {{ sphinxsearch_searchd_watchdog }}
+{% endif %}
+
+{% if sphinxsearch_searchd_predicted_time_costs is defined %}
+	# costs for max_predicted_time model, in (imaginary) nanoseconds
+	# optional, default is "doc=64, hit=48, skip=2048, match=64"
+	#
+	predicted_time_costs	= {{ sphinxsearch_searchd_predicted_time_costs }}
+{% endif %}
+
+{% if sphinxsearch_searchd_sphinxql_state is defined %}
+	# current SphinxQL state (uservars etc) serialization path
+	# optional, default is none (do not serialize SphinxQL state)
+	#
+	sphinxql_state			= {{ sphinxsearch_searchd_sphinxql_state }}
+{% endif %}
+
+{% if sphinxsearch_searchd_rt_merge_iops is defined %}
+	# maximum RT merge thread IO calls per second, and per-call IO size
+	# useful for throttling (the background) OPTIMIZE INDEX impact
+	# optional, default is 0 (unlimited)
+	#
+	rt_merge_iops			= {{ sphinxsearch_searchd_rt_merge_iops }}
+	rt_merge_maxiosize		= {{ sphinxsearch_searchd_rt_merge_maxiosize }}
+{% endif %}
+
+{% if sphinxsearch_searchd_ha_ping_interval is defined %}
+	# interval between agent mirror pings, in milliseconds
+	# 0 means disable pings
+	# optional, default is 1000
+	#
+	ha_ping_interval		= {{ sphinxsearch_searchd_ha_ping_interval }}
+{% endif %}
+
+{% if sphinxsearch_searchd_ha_period_karma is defined %}
+	# agent mirror statistics window size, in seconds
+	# stats older than the window size (karma) are retired
+	# that is, they will not affect master choice of agents in any way
+	# optional, default is 60 seconds
+	#
+	ha_period_karma			= {{ sphinxsearch_searchd_ha_period_karma }}
+{% endif %}
+
+{% if sphinxsearch_searchd_prefork_rotation_throttle is defined %}
+	# delay between preforked children restarts on rotation, in milliseconds
+	# optional, default is 0 (no delay)
+	#
+	prefork_rotation_throttle	= {{ sphinxsearch_searchd_prefork_rotation_throttle }}
+{% endif %}
+
+{% if sphinxsearch_searchd_snippets_file_prefix is defined %}
+	# a prefix to prepend to the local file names when creating snippets
+	# with load_files and/or load_files_scatter options
+	# optional, default is empty
+	#
+	snippets_file_prefix		= {{ sphinxsearch_searchd_snippets_file_prefix }}
+{% endif %}
+}
+
+#############################################################################
+## common settings
+#############################################################################
+
+common
+{
+{% if sphinxsearch_common_lemmatizer_base is defined %}
+	# lemmatizer dictionaries base path
+	# optional, defaut is /usr/local/share (see ./configure --datadir)
+	#
+	lemmatizer_base = {{ sphinxsearch_common_lemmatizer_base }}
+{% endif %}
+
+{% if sphinxsearch_common_rlp_root is defined %}
+	# path to RLP root directory
+	# optional, defaut is /usr/local/share (see ./configure --datadir)
+	#
+	rlp_root = {{ sphinxsearch_common_rlp_root }}
+{% endif %}
+
+{% if sphinxsearch_common_rlp_environment is defined %}
+	# path to RLP environment file
+	# optional, defaut is /usr/local/share/rlp-environment.xml (see ./configure --datadir)
+	#
+	rlp_environment = {{ sphinxsearch_common_rlp_environment }}
+{% endif %}
+}

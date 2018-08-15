@@ -1,0 +1,16 @@
+---
+galaxy_info:
+  author: "Torsten Schrade"
+  description: "Install the Sphinxsearch Server"
+  company: "Digital Academy – Academy of Sciences and Literature | Mainz"
+  license: "MIT"
+  min_ansible_version: 2.0
+  platforms:
+    - name: Debian
+      versions:
+        - wheezy
+        - jessie
+  galaxy_tags:
+    - sphinxsearch
+
+dependencies: []
